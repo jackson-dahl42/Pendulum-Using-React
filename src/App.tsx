@@ -1,21 +1,23 @@
+import React, { useState } from 'react';
+import { Slider } from '@mui/material';
 import Canvas from './Canvas';
 
-let velocity = 0
-let angle = 10
-let gravity = 9.8
-let damping = 0.1
-let length = 10
-
 function App() {
-
+  
+  let [gravity, setGravity] = useState(9.8);
+  let [damping, setDamping] = useState(0.1);
+  let [angle, setAngle] = useState(10);
+  let [length, setLength] = useState(10);
+  let velocity = 0;
+  
   const draw = (ctx: CanvasRenderingContext2D, frameCount: number) => {
-        let acceleration = (-gravity / length) * Math.sin(angle) - (damping * velocity)
+        let acceleration = (-gravity / length) * Math.sin(angle * Math.PI /180) - (damping * velocity)
         velocity += acceleration
         angle += velocity
         const pivotx = 100;
-        const pivoty = 100;
-        const bobX = pivotx + length * Math.sin(angle);
-        const bobY = pivoty + length * Math.cos(angle);
+        const pivoty = 20;
+        const bobX = pivotx + length * Math.sin(angle * Math.PI / 180);
+        const bobY = pivoty + length * Math.cos(angle * Math.PI / 180);
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.beginPath();
@@ -30,8 +32,45 @@ function App() {
         ctx.stroke();
   };
   return (
-    
+    <div>
+      Gravity
+      <Slider
+        aria-labelledby="gravity-slider"
+        value={gravity}
+        min={0}
+        max={20}
+        step={0.1}
+        onChange={(event, newValue) => setGravity(newValue)}
+      />
+      Damping
+      <Slider
+        aria-labelledby="damping-slider"
+        value={damping}
+        min={0}
+        max={0.5}
+        step={0.01}
+        onChange={(event, newValue) => setDamping(newValue)}
+      />
+      Angle
+      <Slider
+        aria-labelledby="angle-slider"
+        value={angle}
+        min={0}
+        max={360}
+        step={1}
+        onChange={(event, newValue) => setAngle(newValue)}
+      />
+      Length
+      <Slider
+        aria-labelledby="length-slider"
+        value={length}
+        min={0}
+        max={100}
+        step={1}
+        onChange={(event, newValue) => setLength(newValue)}
+      />
         <Canvas draw={draw} />
+      </div>
   );
 }
 
